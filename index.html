@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Stopwatch App</title>
+</head>
+<style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.stopwatch {
+    text-align: center;
+}
+
+#display {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+button {
+    font-size: 1em;
+    margin: 5px;
+    padding: 5px 10px;
+}
+
+#laps {
+    list-style-type: none;
+    padding: 0;
+}
+
+</style>
+<body>
+    <script>
+        let timer;
+let isRunning = false;
+let seconds = 0;
+let laps = [];
+
+function startStop() {
+    if (isRunning) {
+        clearInterval(timer);
+        document.getElementById("startStop").innerText = "Start";
+    } else {
+        timer = setInterval(updateDisplay, 1000);
+        document.getElementById("startStop").innerText = "Stop";
+    }
+    isRunning = !isRunning;
+}
+
+function reset() {
+    clearInterval(timer);
+    isRunning = false;
+    seconds = -1;
+    laps = [];
+    updateDisplay();
+    document.getElementById("startStop").innerText = "Start";
+    document.getElementById("laps").innerHTML = "";
+}
+
+function lap() {
+    laps.push(seconds);
+    updateLaps();
+}
+
+function updateDisplay() {
+    seconds++;
+    const display = document.getElementById("display");
+    display.innerText = formatTime(seconds);
+}
+
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return (
+        pad(hours) + ":" +
+        pad(minutes) + ":" +
+        pad(remainingSeconds)
+    );
+}
+
+function pad(num) {
+    return num < 10 ? "0" + num : num;
+}
+
+function updateLaps() {
+    const lapsList = document.getElementById("laps");
+    const lapItem = document.createElement("li");
+    lapItem.innerText = laps.length + ". " + formatTime(laps[laps.length - 1]);
+    lapsList.appendChild(lapItem);
+}
+
+    </script>
+    <div class="stopwatch">
+        <div id="display">00:00:00</div>
+        <button id="startStop" onclick="startStop()">Start</button>
+        <button id="reset" onclick="reset()">Reset</button>
+        <button id="lap" onclick="lap()">Lap</button>
+        <ul id="laps"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
